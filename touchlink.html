@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<meta charset=utf-8 />
+	<title>JS Bin</title>
+	<!--[if IE]>
+	  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<style>
+	  article, aside, figure, footer, header, hgroup,
+	  menu, nav, section { display: block; }
+	</style>
+  
+   </head>
+<body>
+  <p id="hello">Hello World and other such wonderful stuff <a href="http://www.google.com">Some stuff</a> and more junk and more stuff 
+  and swanky awesomeness all around.  Here is yet <a href="http://www.dyknow.com/support/knowledgebase.aspx">another link</a> of which I hope you enjoy/partake.
+And last but certainly not least, we have the lovely <a href="http://www.wikipedia.org">wikipedia</a> which change all of our lives.</p>
+
+<script type="text/javascript">
+	helper = null;//is probably a jquery object but testing will learn for sure
+	link = null;//will be a wrapped jquery object of the original this 
+	$(document).ready(function(){
+		var startX = -1, leftOffset = -1;
+		var cancelLinkClick = false;
+		underlink = $("<div id='underlink' style='overflow:hidden;background-color:white;'>The content is here</div>")
+			.appendTo("body")
+			.hide();
+			$(document). on(
+			"touchstart", "a", function(event){
+				//lets start by only handing first touch
+				var e = event.originalEvent;
+				link = $(this);
+				//can't prevent default here or it will never click the link
+				//e.preventDefault();//need to block it from scrolling
+				var oldself = self;
+				self = {pageXOffset:0,pageYOffset:0};
+				var offset = link.offset();
+				startX = offset.left;
+				self = oldself;
+				leftOffset = e.touches[0].pageX - startX;
+				cancelLinkClick = false;//don't yet need to block from clicking
+			})
+			.on("touchmove", "a", function(event){
+				var e = event.originalEvent;
+				e.preventDefault();
+				var pageX = e.targetTouches[0].pageX;
+				curX = pageX - leftOffset;
+				if(curX > 5 && !cancelLinkClick){
+					cancelLinkClick = true;
+					var oldself = self;
+					self = {pageXOffset:0,pageYOffset:0};
+					var offset = link.offset();
+					helper = link.clone();
+						helper
+						.appendTo("body")
+						.css({"position": "absolute",
+							"display":"block",
+							"left":offset.left.toString() + "px",
+							"top":offset.top.toString() + "px",
+							"background-color":"white",
+							"z-index": "20000"
+							})
+						.offset(link.offset());
+					link.css("visibility", "hidden");
+					underlink.text(this.href);
+					underlink.width(1);
+					underlink.show();
+					underlink.offset(offset);
+					self = oldself;	
+				}
+				if(cancelLinkClick && pageX > startX + leftOffset){
+					helper.css("left", function(val){
+							return val + curX;
+					});
+					underlink.width(curX - startX);
+				}
+			})
+			.on("touchend", "a", function(event){
+			console.log("touch end");
+				event.preventDefault();
+				var e = event.originalEvent;
+				if(cancelLinkClick){
+					e.preventDefault();
+//					console.log("default prevented!");
+					helper.animate({"left": startX}, 200, function(){
+						if(helper != null){
+							helper.remove();
+							helper = null;
+							link.css("visibility", "visible");
+							link = null;
+							underlink.hide();
+						}
+					});
+				}
+			});
+	
+/*		$("a").bind({
+			"touchstart": function(event){
+				//lets start by only handing first touch
+				var e = event.originalEvent;
+				link = $(this);
+				//can't prevent default here or it will never click the link
+				//e.preventDefault();//need to block it from scrolling
+				var oldself = self;
+				self = {pageXOffset:0,pageYOffset:0};
+				var offset = link.offset();
+				startX = offset.left;
+				self = oldself;
+				leftOffset = e.touches[0].pageX - startX;
+				cancelLinkClick = false;//don't yet need to block from clicking
+			},
+			"touchmove": function(event){
+				var e = event.originalEvent;
+				e.preventDefault();
+				var pageX = e.targetTouches[0].pageX;
+				curX = pageX - leftOffset;
+				if(curX > 5 && !cancelLinkClick){
+					cancelLinkClick = true;
+					var oldself = self;
+					self = {pageXOffset:0,pageYOffset:0};
+					var offset = link.offset();
+					helper = link.clone();
+						helper
+						.appendTo("body")
+						.css({"position": "absolute",
+							"display":"block",
+							"left":offset.left.toString() + "px",
+							"top":offset.top.toString() + "px",
+							"background-color":"white",
+							"z-index": "20000"
+							})
+						.offset(link.offset());
+					link.css("visibility", "hidden");
+					underlink.text(this.href);
+					underlink.width(1);
+					underlink.show();
+					underlink.offset(offset);
+					self = oldself;	
+				}
+				if(cancelLinkClick && pageX > startX + leftOffset){
+					helper.css("left", function(val){
+							return val + curX;
+					});
+					underlink.width(curX - startX);
+				}
+			},
+			"touchend": function(event){
+			console.log("touch end");
+				event.preventDefault();
+				var e = event.originalEvent;
+				if(cancelLinkClick){
+					e.preventDefault();
+//					console.log("default prevented!");
+					helper.animate({"left": startX}, 200, function(){
+						if(helper != null){
+							helper.remove();
+							helper = null;
+							link.css("visibility", "visible");
+							link = null;
+							underlink.hide();
+						}
+					});
+				}
+			}
+		});*/
+	});
+
+</script>
+</body>
+</html>

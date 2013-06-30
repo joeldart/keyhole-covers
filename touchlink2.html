@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+    <head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<meta charset=utf-8 />
+	<title>JS Bin</title>
+	<!--[if IE]>
+	  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<style>
+	  article, aside, figure, footer, header, hgroup,
+	  menu, nav, section { display: block; }
+	</style>
+	<style>
+	</style>
+   </head>
+<body>
+	<h1>SEPARATE JS FILE!!!!</h1>
+  <p id="hello">Hello World and other such wonderful stuff <a href="http://www.google.com">Some stuff</a> and more junk and more stuff 
+  and swanky awesomeness all around.</p><p>Here is yet <a href="http://www.dyknow.com/support/knowledgebase.aspx">another link</a> of which I hope you enjoy/partake.
+And last but certainly not least, we have the lovely <a href="http://www.wikipedia.org">wikipedia</a> which change all of our lives.</p>
+
+<p><a href="javascript:(function(){var%20head=document.getElementsByTagName('head')[0];var%20script=document.createElement('script');script.type='text/Javascript';script.src='http://192.168.1.101/touchlink.js';script.onload=function(){loadTouchLink();};head.appendChild(script);})()">bring in script!</a>
+
+<script type="text/javascript" src="touchlink.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		liveBindAnchorsToTouch();
+//		bindAnchorsToTouch();
+	});
+</script>
+</body>
+</html>
